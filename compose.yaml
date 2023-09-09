@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  database:
+    container_name: przepisowoJavaDB
+    image: mariadb
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE : przepisowo
+    volumes:
+      - database_data:/var/lib/mariadb/przepisowo:rw
+    ports:
+      - "21370:3306"
+volumes:
+  database_data:
