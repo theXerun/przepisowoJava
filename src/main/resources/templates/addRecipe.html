@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3" lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodawanie przepisu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous">
+    <script th:inline="javascript">
+
+        var IDITER = 0;
+        async function submit() {
+            let name = document.getElementById("name").value
+            let description = document.getElementById("description").value
+            let isPublic = Boolean(document.getElementById("public").checked)
+            let ingredients = Array.from(document.getElementsByName("ingredient[]")).map(i => i.innerText);
+            let ingredientQuantities = Array.from(document.getElementsByName("ingredientQuantity[]")).map(i => i.value)
+            let ingredientType = []
+            ingredients.forEach((value, index) => {
+                ingredientType.push({
+                    name: ingredients[index],
+                    quantity: Number(ingredientQuantities[index])
+                })
+            })
+            const response = await fetch("/recipe/add", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name: name,
+                    description: description,
+                    isPublic: isPublic,
+                    ingredients: ingredientType
+                })
+            })
+        }
+        function addIngredient() {
+            let container = document.getElementById("ingredients")
+            let subcontainer = document.createElement("div")
+            let input = document.createElement("select")
+            let number = document.createElement("input")
+            number.type = "number"
+            number.min = "1"
+            number.defaultValue = "1"
+            number.name = "ingredientQuantity[]"
+            subcontainer.id = String(IDITER)
+            input.name = "ingredient[]"
+
+            let options = /*[[${ingredientTypes}]]*/ [{name: 'Cebula'}]
+
+            options.forEach((value, i) => {
+                let el = document.createElement("option")
+                el.value = value.name
+                el.textContent = value.name
+                input.appendChild(el)
+            })
+
+            let remove = document.createElement("button")
+            remove.addEventListener("click", () => removeIngredient(subcontainer.id))
+            remove.textContent = "Usuń"
+            remove.className = "btn-warning"
+            subcontainer.appendChild(input)
+            subcontainer.appendChild(number)
+            subcontainer.appendChild(remove)
+            container.appendChild(subcontainer)
+            IDITER++
+        }
+        function removeIngredient(id) {
+            let container = document.getElementById("ingredients")
+            container.removeChild(document.getElementById(id))
+        }
+    </script>
+</head>
+<body>
+<div th:insert="navbar :: navbar">  </div>
+<div class="container">
+    <div class="form">
+        <h1>Nazwa przepisu:</h1>
+        <input id="name" type="text">
+        <h3>Składniki:</h3>
+        <div id="ingredients">
+
+        </div>
+        <button class="btn btn-secondary" onclick="addIngredient()">Dodaj</button>
+        <h3>Opis</h3>
+        <textarea id="description"></textarea>
+        <h4>Czy chcesz udostępnić przepis wszystkim użytkownikom?</h4>
+        <input id="public" type="checkbox">
+    </div>
+    <button class="btn btn-primary" onclick="submit()">Dodaj przepis</button>
+</div>
+</body>
+</html>

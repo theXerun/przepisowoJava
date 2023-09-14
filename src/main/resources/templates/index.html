@@ -9,37 +9,23 @@
           crossorigin="anonymous">
 </head>
 <body>
-<!--<nav class="navbar navbar-expand-lg navbar-dark bg-dark">-->
-<!--    <a class="navbar-brand" th:href="@{/}">Przepisowo</a>-->
-<!--    <button class="navbar-toggler"-->
-<!--            type="button"-->
-<!--            data-toggle="collapse"-->
-<!--            data-target="#navbarNav"-->
-<!--            aria-controls="navbarNav"-->
-<!--            aria-expanded="false"-->
-<!--            aria-label="Toggle navigation">-->
-<!--        <span class="navbar-toggler-icon"></span>-->
-<!--    </button>-->
-<!--    <div class="collapse navbar-collapse" id="navbarNav">-->
-<!--        <ul class="navbar-nav">-->
-<!--            <li class="nav-item">-->
-<!--                <a class="nav-link" href="#">Lodówka</a>-->
-<!--            </li>-->
-<!--            <li class="nav-item">-->
-<!--                <a class="nav-link" href="#">Wszystkie przepisy</a>-->
-<!--            </li>-->
-<!--            <li class="nav-item">-->
-<!--                <form th:action="@{/logout}" method="post">-->
-<!--                    <input type="submit" value="Wyloguj się"/>-->
-<!--                </form>-->
-<!--            </li>-->
-<!--        </ul>-->
-<!--    </div>-->
-<!--</nav>-->
-
 <div th:insert="navbar :: navbar">  </div>
 <div class="container">
-    <h1>Witaj <span th:text="${username}">username</span></h1>
+    <h1>Witaj <span th:text="${username}">username</span>! :)</h1>
+
+    <div th:if="${recipes!=null and !recipes.isEmpty()}">
+        <div th:each="recipe: ${recipes}">
+            <div th:insert="recipecard :: recipecard(${recipe.name}, ${recipe.description}, ${recipe.id})"></div>
+        </div>
+    </div>
+    <div th:unless="${recipes!=null and !recipes.isEmpty()}">
+        <p>
+            Nie masz chwilowo przepisów możliwych do wykonania,
+            dodaj składniki do lodówki lub pooglądaj wszystkie
+            przepisy dla inspiracji
+        </p>
+    </div>
+
 </div>
 </body>
 </html>

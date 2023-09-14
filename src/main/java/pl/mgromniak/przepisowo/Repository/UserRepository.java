@@ -7,7 +7,7 @@ import pl.mgromniak.przepisowo.Entity.User;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, String> {
+public interface UserRepository extends JpaRepository<User, Long> {
     User findUserByUsername(String username);
     boolean existsByUsername(String username);
 }

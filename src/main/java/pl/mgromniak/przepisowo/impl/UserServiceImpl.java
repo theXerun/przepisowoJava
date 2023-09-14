@@ -2,8 +2,10 @@ package pl.mgromniak.przepisowo.impl;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.mgromniak.przepisowo.Entity.Fridge;
 import pl.mgromniak.przepisowo.Entity.Role;
 import pl.mgromniak.przepisowo.Entity.User;
+import pl.mgromniak.przepisowo.Repository.FridgeRepository;
 import pl.mgromniak.przepisowo.Repository.RoleRepository;
 import pl.mgromniak.przepisowo.Service.UserService;
 import pl.mgromniak.przepisowo.dto.UserDto;
@@ -16,27 +18,33 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     private RoleRepository roleRepository;
+    private FridgeRepository fridgeRepository;
     private PasswordEncoder passwordEncoder;
 
     public UserServiceImpl(UserRepository userRepository,
                            RoleRepository roleRepository,
-                           PasswordEncoder passwordEncoder) {
+                           PasswordEncoder passwordEncoder,
+                           FridgeRepository fridgeRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.fridgeRepository = fridgeRepository;
     }
 
     @Override
     public void saveUser(UserDto userDto) {
         User user = new User();
+        Fridge fridge = new Fridge();
         user.setUsername(userDto.getUsername());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        user.setFridge(fridge);
 
         Role role = roleRepository.findByName("ROLE_ADMIN");
         if(role == null){
             role = checkRoleExist();
         }
         user.setRoles(List.of(role));
+        fridgeRepository.save(fridge);
         userRepository.save(user);
     }
 
