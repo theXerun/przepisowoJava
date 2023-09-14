@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pl"
       xmlns:th="http://www.thymeleaf.org"
->
+      xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
@@ -55,9 +55,7 @@
                         </div>
                         <div class="form-group mb-3">
                             <button type="submit" class="btn btn-primary" >Dalej</button>
-                        </div>
-                        <div class="mb-3">
-                            <a th:href="@{/register}"><button class="btn btn-secondary" >Rejestracja</button></a>
+                            <span><a th:href="@{/register}">Rejestracja</a></span>
                         </div>
                     </form>
                 </div>

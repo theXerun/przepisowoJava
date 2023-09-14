@@ -9,6 +9,7 @@ import pl.mgromniak.przepisowo.Repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import pl.mgromniak.przepisowo.impl.CustomUserDetailsImpl;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -27,10 +28,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findUserByUsername(username);
 
         if (user != null) {
-            return new org.springframework.security.core.userdetails.User(user.getUsername(),
-                    user.getPassword(),
-                    mapRolesToAuthorities(user.getRoles()));
-        }else{
+            return new CustomUserDetailsImpl(user);
+        } else {
             throw new UsernameNotFoundException("Invalid username or password.");
         }
     }
