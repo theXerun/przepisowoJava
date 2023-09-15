@@ -17,7 +17,6 @@ public class Fridge {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "ingredient_id")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "fridge", orphanRemoval = true)
     private List<Ingredient> ingredients = new ArrayList<>();
 }

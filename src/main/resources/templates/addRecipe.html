@@ -14,7 +14,7 @@
             let name = document.getElementById("name").value
             let description = document.getElementById("description").value
             let isPublic = Boolean(document.getElementById("public").checked)
-            let ingredients = Array.from(document.getElementsByName("ingredient[]")).map(i => i.innerText);
+            let ingredients = Array.from(document.getElementsByName("ingredient[]")).map(i => i.value);
             let ingredientQuantities = Array.from(document.getElementsByName("ingredientQuantity[]")).map(i => i.value)
             let ingredientType = []
             ingredients.forEach((value, index) => {

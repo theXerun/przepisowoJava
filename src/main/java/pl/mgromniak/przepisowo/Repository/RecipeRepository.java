@@ -18,6 +18,7 @@ import pl.mgromniak.przepisowo.Exception.BreakException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -55,9 +56,9 @@ public class RecipeRepository {
 
         for (Recipe recipe : available) {
             try {
-                for (Ingredient ingredient : recipe.getIngredients()) {
-                    Optional<Ingredient> ig = fridge.getIngredients().stream().filter(i -> i.getIngredientType() == ingredient.getIngredientType()).findFirst();
-                    if (ig.isEmpty() || ingredient.getQuantity() < ig.get().getQuantity()) {
+                for (Ingredient recipeIngredient : recipe.getIngredients()) {
+                    Optional<Ingredient> fridgeIngredient = fridge.getIngredients().stream().filter(i -> Objects.equals(i.getIngredientType().getName(), recipeIngredient.getIngredientType().getName())).findFirst();
+                    if (fridgeIngredient.isEmpty() || recipeIngredient.getQuantity() > fridgeIngredient.get().getQuantity()) {
                         throw new BreakException();
                     }
                 }
@@ -71,9 +72,9 @@ public class RecipeRepository {
 
     public Boolean isRecipeDoable(Recipe recipe, User user) {
         try {
-            for (Ingredient ingredient : recipe.getIngredients()) {
-                Optional<Ingredient> ig = user.getFridge().getIngredients().stream().filter(i -> i.getIngredientType() == ingredient.getIngredientType()).findFirst();
-                if (ig.isEmpty() || ingredient.getQuantity() < ig.get().getQuantity()) {
+            for (Ingredient recipeIngredient : recipe.getIngredients()) {
+                Optional<Ingredient> fridgeIngredient = user.getFridge().getIngredients().stream().filter(i -> Objects.equals(i.getIngredientType().getName(), recipeIngredient.getIngredientType().getName())).findFirst();
+                if (fridgeIngredient.isEmpty() || recipeIngredient.getQuantity() > fridgeIngredient.get().getQuantity()) {
                     throw new BreakException();
                 }
             }
@@ -85,6 +86,11 @@ public class RecipeRepository {
 
     public void save(Recipe recipe) {
         em.persist(recipe);
+        em.flush();
+    }
+
+    public void remove(Recipe recipe) {
+        em.remove(recipe);
         em.flush();
     }
 }

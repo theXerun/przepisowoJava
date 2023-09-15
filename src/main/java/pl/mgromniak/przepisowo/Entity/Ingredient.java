@@ -19,7 +19,15 @@ public class Ingredient {
     private Integer id;
     private Integer quantity;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "name")
     private IngredientType ingredientType;
+
+    @ManyToOne
+    @JoinColumn(name = "ingredient_fridge_id")
+    private Fridge fridge;
+
+    @ManyToOne
+    @JoinColumn(name = "ingredient_recipe_id")
+    private Recipe recipe;
 }

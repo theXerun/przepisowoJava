@@ -14,6 +14,7 @@
     <h1>Witaj <span th:text="${username}">username</span>! :)</h1>
 
     <div th:if="${recipes!=null and !recipes.isEmpty()}">
+        <h3>Przepisy które możesz wykonać</h3>
         <div th:each="recipe: ${recipes}">
             <div th:insert="recipecard :: recipecard(${recipe.name}, ${recipe.description}, ${recipe.id})"></div>
         </div>

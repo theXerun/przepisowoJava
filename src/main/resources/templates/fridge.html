@@ -7,129 +7,30 @@
           rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
           crossorigin="anonymous">
-    <script th:inline="javascript">
-        let IDITER = 0;
-        let fridge;
-        fetch("/fridge/json")
-            .then((response) => {
-                return response.json()
-            })
-            .then((data) => {
-                fridge = data
-                if (fridge != null) {
-                    determineIDITER()
-                    loadIngredients()
-                }
-            })
-
-        function determineIDITER() {
-            for (const ingredient in fridge.ingredients) {
-                if (ingredient.id > IDITER) {
-                    IDITER = ingredient.id + 1
-                }
-            }
-        }
-
-        function loadIngredients() {
-            for (const ingredient in fridge.ingredients) {
-                console.log(fridge.id)
-                let container = document.getElementById("ingredients")
-                let subcontainer = document.createElement("div")
-                let input = document.createElement("select")
-                let number = document.createElement("input")
-                number.type = "number"
-                number.min = "1"
-                number.defaultValue = ingredient.quantity
-                number.name = "ingredientQuantity[]"
-                subcontainer.id = ingredient.id
-                input.name = "ingredient[]"
-
-                let options = /*[[${ingredientTypes}]]*/ [{name: 'Cebula'}]
-
-                options.forEach((value, i) => {
-                    let el = document.createElement("option")
-                    if (value.name === ingredient.ingredientType.name) {
-                        el.selected
-                    }
-                    el.value = value.name
-                    el.textContent = value.name
-                    input.appendChild(el)
-                })
-
-                let remove = document.createElement("button")
-                remove.addEventListener("click", () => removeIngredient(subcontainer.id))
-                remove.textContent = "Usuń"
-                remove.className = "btn-warning"
-                subcontainer.appendChild(input)
-                subcontainer.appendChild(number)
-                subcontainer.appendChild(remove)
-                container.appendChild(subcontainer)
-            }
-        }
-
-        async function submit() {
-            let ingredients = Array.from(document.getElementsByName("ingredient[]")).map(i => i.innerText);
-            let ingredientQuantities = Array.from(document.getElementsByName("ingredientQuantity[]")).map(i => i.value)
-            let ingredientType = []
-            ingredients.forEach((value, index) => {
-                ingredientType.push({
-                    name: ingredients[index],
-                    quantity: Number(ingredientQuantities[index])
-                })
-            })
-            const response = await fetch("/fridge/edit", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(ingredientType)
-            })
-        }
-        function addIngredient() {
-            let container = document.getElementById("ingredients")
-            let subcontainer = document.createElement("div")
-            let input = document.createElement("select")
-            let number = document.createElement("input")
-            number.type = "number"
-            number.min = "1"
-            number.defaultValue = "1"
-            number.name = "ingredientQuantity[]"
-            subcontainer.id = String(IDITER)
-            input.name = "ingredient[]"
-
-            let options = /*[[${ingredientTypes}]]*/ [{name: 'Cebula'}]
-
-            options.forEach((value, i) => {
-                let el = document.createElement("option")
-                el.value = value.name
-                el.textContent = value.name
-                input.appendChild(el)
-            })
-
-            let remove = document.createElement("button")
-            remove.addEventListener("click", () => removeIngredient(subcontainer.id))
-            remove.textContent = "Usuń"
-            remove.className = "btn-warning"
-            subcontainer.appendChild(input)
-            subcontainer.appendChild(number)
-            subcontainer.appendChild(remove)
-            container.appendChild(subcontainer)
-            IDITER++
-        }
-        function removeIngredient(id) {
-            let container = document.getElementById("ingredients")
-            container.removeChild(document.getElementById(id))
-        }
-    </script>
 </head>
 <body>
 <div th:insert="navbar :: navbar">  </div>
 <div class="container">
     <div id="ingredients">
-
+        <a th:href="@{/fridge/add}"><button class="btn btn-secondary">Dodaj</button></a>
+        <form th:action="@{/fridge/edit}" th:object="${fridge}" method="post">
+            <table class="table">
+                <tbody>
+                <tr th:each="ingredient, itemStat: *{ingredients}">
+                    <th scope="row"></th>
+                    <td> <input list="ingredientTypes" th:field="*{ingredients[__${itemStat.index}__].ingredientType.name}"></td>
+                    <td> <input type="number" min="0" th:field="*{ingredients[__${itemStat.index}__].quantity}"></td>
+                    <td th:text="${ingredient.ingredientType.quantityType}"></td>
+                </tr>
+                </tbody>
+                <datalist id="ingredientTypes">
+                    <option th:each="typename : ${ingredientTypes}" th:value="${typename.name}">
+                </datalist>
+            </table>
+            <button class="btn btn-primary" type="submit">Zapisz</button>
+        </form>
     </div>
-    <button class="btn btn-secondary" onclick="addIngredient()">Dodaj</button>
-    <button class="btn btn-primary" onclick="submit()">Zapisz</button>
+
 </div>
 </body>
 </html>

@@ -13,10 +13,10 @@
   <div class="container">
     <h1 th:text="${recipe.name}">Name</h1>
     <h3>Składniki:</h3>
-    <div th:each="ingredient: ${recipe.ingredients}">
+    <div>
       <table class="table table-hover table-sm">
         <tbody>
-        <tr>
+        <tr th:each="ingredient: ${recipe.ingredients}">
           <th scope="row"></th>
           <td th:text="${ingredient.ingredientType.name}">Cebula</td>
           <td th:text="${ingredient.quantity}">1</td>
@@ -29,6 +29,18 @@
     <p th:text="${recipe.description}">opis</p>
     <h4>Autor</h4>
     <p th:text="${recipe.author.username}">autor</p>
+    <div th:if="${isAuthor}">
+      <form th:action="@{/recipe/delete/{id}(id=${recipe.id})}" method="post">
+        <button class="btn btn-danger">Usuń przepis</button>
+      </form>
+    </div>
+    <br>
+    <div th:if="${doable}">
+      <form th:action="@{/recipe/{id}/subtract(id=${recipe.id})}" method="post">
+        <p>Po kliknięciu automatycznie odejmuje składniki z lodówki:</p>
+        <button class="btn btn-primary">Zrobiłem to!</button>
+      </form>
+    </div>
   </div>
 </body>
 </html>

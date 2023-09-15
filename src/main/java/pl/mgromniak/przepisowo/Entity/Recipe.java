@@ -22,8 +22,7 @@ public class Recipe {
     @JoinColumn(name = "user_id")
     private User author;
     private Boolean isPublic;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "ingredient_id")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe", orphanRemoval = true)
     private List<Ingredient> ingredients;
 
 
