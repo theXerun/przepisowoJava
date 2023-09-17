@@ -21,9 +21,11 @@ import pl.mgromniak.przepisowo.Repository.IngredientTypeRepository;
 import pl.mgromniak.przepisowo.dto.IngredientTypeDto;
 import pl.mgromniak.przepisowo.impl.CustomUserDetailsImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @Log
@@ -65,9 +67,10 @@ public class FridgeController {
             model.addAttribute("error", "Brak typu składnika");
             return "error";
         }
+        log.warning(ingredient.getIngredientType().getName() + ' ' + ingredient.getQuantity());
         ingredient.setIngredientType(ingredientTypeRepository.findById(ingredient.getIngredientType().getName()).get());
         ingredient.setFridge(fridge);
-        List<Ingredient> newList = fridge.getIngredients();
+        List<Ingredient> newList = new ArrayList<>(fridge.getIngredients()); // bo inaczej jest immutable
         newList.add(ingredient);
         fridge.setIngredients(newList);
         fridgeRepository.save(fridge);
@@ -80,7 +83,7 @@ public class FridgeController {
         List<Ingredient> formIngredients = fridge.getIngredients()
                 .stream()
                 .filter(i -> i.getQuantity() != 0)
-                .toList();
+                .collect(Collectors.toList()); // mutable
 
         formIngredients = formIngredients
                 .stream()
@@ -89,7 +92,7 @@ public class FridgeController {
                                             .findById(i.getIngredientType().getName()).get());
                     i.setFridge(userFridge);
                 })
-                .toList();
+                .toList(); // immutable
 
         userFridge.setIngredients(formIngredients);
         fridgeRepository.save(userFridge);

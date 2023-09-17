@@ -21,6 +21,7 @@ import pl.mgromniak.przepisowo.Repository.RecipeRepository;
 import pl.mgromniak.przepisowo.dto.RecipeDto;
 import pl.mgromniak.przepisowo.impl.CustomUserDetailsImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -101,7 +102,7 @@ public class RecipeController {
                 if (found.get().getQuantity() - recipeIngredient.getQuantity() > 0) {
                     found.get().setQuantity(found.get().getQuantity() - recipeIngredient.getQuantity());
                 } else {
-                    List<Ingredient> newIngredients = fridge.getIngredients();
+                    List<Ingredient> newIngredients = new ArrayList<>(fridge.getIngredients());
                     newIngredients.remove(found.get());
                     fridge.setIngredients(newIngredients);
                     fridgeRepository.save(fridge);
