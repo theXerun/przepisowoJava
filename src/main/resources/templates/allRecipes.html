@@ -11,6 +11,8 @@
 <body>
 <div th:insert="navbar :: navbar">  </div>
 <div class="container">
+    <h1>Wszystkie dostępne przepisy</h1>
+    <p>Oto wszystkie, niekoniecznie możliwe do zrobienia, przepisy.</p>
     <div th:each="recipe: ${recipes}">
         <div th:replace="recipecard :: recipecard(${recipe.name}, ${recipe.description}, ${recipe.id})"></div>
     </div>
