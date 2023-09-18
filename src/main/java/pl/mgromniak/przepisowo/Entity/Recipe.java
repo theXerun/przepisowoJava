@@ -17,6 +17,7 @@ public class Recipe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
+    @Column(length = 4096)
     private String description;
     @ManyToOne
     @JoinColumn(name = "user_id")

@@ -35,6 +35,9 @@
                     ingredients: ingredientType
                 })
             })
+            if (response.ok) {
+                window.location.replace("http://localhost:8080/recipe");
+            }
         }
         function addIngredient() {
             let container = document.getElementById("ingredients")
